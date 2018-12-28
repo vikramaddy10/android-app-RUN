@@ -1,0 +1,273 @@
+package com.example.aditya.addy;
+
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.media.MediaPlayer;
+import android.os.Bundle;
+import android.os.SystemClock;
+import android.preference.PreferenceManager;
+import android.provider.MediaStore;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
+import android.view.View;
+import android.widget.Chronometer;
+import android.widget.EditText;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.tiancaicc.springfloatingactionmenu.SpringFloatingActionMenu;
+
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+public class MainActivity extends AppCompatActivity implements View.OnClickListener,SensorEventListener{
+    SensorManager sensorManager;
+    float oldSteps;
+    boolean running = false,first = true;
+    Boolean check;
+    Double compairdist;
+    int checkdis=0;
+    MediaPlayer mediaPlayer;
+    Chronometer simpleChronometer;
+    TextView distance, start, stop, Tdis, Tdkmph, Ttime, Tkmph;
+    EditText setdistance;
+    private static int SELECT_PICTURE = 1;
+    int x;
+    static String cdistance, ctime, Daate, Tiime;
+    String colour[] = {"White", "Black", "Red", "Indigo", "Pink", "Teal", "Yellow", "Orange", "Default 1", "Select from gallery"};
+    SpringFloatingActionMenu springFloatingActionMenu;
+    Drawable drawable;
+    Calendar c;
+    SimpleDateFormat dateformat, timeformat;
+    RelativeLayout colours;
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        simpleChronometer = (Chronometer) findViewById(R.id.simpleChronometer);
+        distance = (TextView) findViewById(R.id.distancevalue);
+        start = (TextView) findViewById(R.id.start);
+        stop = (TextView) findViewById(R.id.stop);
+        setdistance = (EditText) findViewById(R.id.setdistance);
+        Tdis = (TextView) findViewById(R.id.distancetext);
+        Tdkmph = (TextView) findViewById(R.id.distancekmph);
+        Ttime = (TextView) findViewById(R.id.timetext);
+        Tkmph = (TextView) findViewById(R.id.timeminutes);
+        colours = (RelativeLayout) findViewById(R.id.activity_main);
+        sensorManager=(SensorManager)getSystemService(Context.SENSOR_SERVICE);
+        SharedPreferences shre = PreferenceManager.getDefaultSharedPreferences(this);
+        String previouslyEncodedImage = shre.getString("image_data", "");
+        int tcolor = shre.getInt("Tcolor", -1);
+        setColorFromResources(tcolor);
+        if (previouslyEncodedImage.equalsIgnoreCase("")) {
+            int themeColorID = shre.getInt("Color", -1);
+            setThemeFromInt(themeColorID);
+        } else {
+            byte[] b = Base64.decode(previouslyEncodedImage, Base64.DEFAULT);
+            Drawable image = new BitmapDrawable(getResources(), BitmapFactory.decodeByteArray(b, 0, b.length));
+            colours.setBackground(image);
+        }
+        springFloatingActionMenu = Utils.showSpringButton(MainActivity.this);
+        start.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                simpleChronometer.start();
+                simpleChronometer.setBase(SystemClock.elapsedRealtime());
+                running = true;
+                Sensor countSensor=sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+                if(countSensor!=null){
+                    sensorManager.registerListener(MainActivity.this,countSensor,SensorManager.SENSOR_DELAY_UI);
+                    Toast.makeText(MainActivity.this, "Refreshing...", Toast.LENGTH_SHORT).show();
+                }else
+                    Toast.makeText(MainActivity.this,"Sensor not found",Toast.LENGTH_SHORT).show();
+            }
+        });
+        stop.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                running = false;
+                first = true;
+                check=false;
+                simpleChronometer.stop();
+                checkdis=0;
+                Toast.makeText(MainActivity.this, "STOPPED", Toast.LENGTH_SHORT).show();
+                cdistance = distance.getText().toString();
+                ctime = simpleChronometer.getText().toString();
+                c = Calendar.getInstance();
+                dateformat = new SimpleDateFormat("dd/MMM/yyyy");
+                timeformat = new SimpleDateFormat("hh:mm:ss aa");
+                Daate = dateformat.format(c.getTime());
+                Tiime = timeformat.format(c.getTime());
+                DatabaseHandler databaseHandler = new DatabaseHandler(MainActivity.this);
+                databaseHandler.addRecord(cdistance,ctime,Daate.toString(),Tiime.toString());
+                final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("SUMMARY")
+                        .setMessage("\nDISTANCE :" + cdistance + "\nTIME TAKEN:" + ctime + "\nDATE :" + Daate + "\nTIME :" + Tiime)
+                        .setNegativeButton("CLOSE", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                            }
+                        });
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+        });
+    }
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == RESULT_OK) {
+            try {
+                Bitmap bit = MediaStore.Images.Media.getBitmap(this.getContentResolver(), data.getData());
+                drawable = new BitmapDrawable(getResources(), bit);
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                bit.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                byte[] b = baos.toByteArray();
+                String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+                SharedPreferences shre = PreferenceManager.getDefaultSharedPreferences(this);
+                SharedPreferences.Editor edit = shre.edit();
+                edit.putString("image_data", encodedImage);
+                edit.commit();
+                colours.setBackgroundDrawable(drawable);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    public void onBackPressed() {
+        if (springFloatingActionMenu.isMenuOpen()) {
+            springFloatingActionMenu.hideMenu();
+        } else {
+            super.onBackPressed();
+        }
+    }
+    public void setColorFromResources(int i) {
+        if (i == 0) {
+            x = getResources().getColor(R.color.white);
+            TextColor(x);
+        }
+        if (i == 1) {
+            x = getResources().getColor(R.color.black);
+            TextColor(x);
+        }
+        if (i == 2) {
+            x = getResources().getColor(R.color.red);
+            TextColor(x);
+        }
+        if (i == 3) {
+            x = getResources().getColor(R.color.indigo);
+            TextColor(x);
+        }
+        if (i == 4) {
+            x = getResources().getColor(R.color.pink);
+            TextColor(x);
+        }
+        if (i == 5) {
+            x = getResources().getColor(R.color.teal);
+            TextColor(x);
+        }
+        if (i == 6) {
+            x = getResources().getColor(R.color.yellow);
+            TextColor(x);
+        }
+        if (i == 7) {
+            x = getResources().getColor(R.color.orange);
+            TextColor(x);
+        }
+    }
+    public void TextColor(int x) {
+        simpleChronometer.setTextColor(x);
+        distance.setTextColor(x);
+        start.setTextColor(x);
+        stop.setTextColor(x);
+        setdistance.setTextColor(x);
+        setdistance.setHintTextColor(x);
+        Tdis.setTextColor(x);
+        Tdkmph.setTextColor(x);
+        Ttime.setTextColor(x);
+        Tkmph.setTextColor(x);
+    }
+    public void changeBackground() {
+        final android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(MainActivity.this);
+        builder.setTitle("THEME")
+                .setItems(colour, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        setThemeFromInt(i);
+                        SharedPreferences shre = PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+                        SharedPreferences.Editor edit = shre.edit();
+                        edit.putInt("Color", i);
+                        if (i != 9) {
+                            edit.putString("image_data", "");
+                        }
+                        edit.commit();
+                        onBackPressed();
+                    }
+                });
+        android.app.AlertDialog alert1 = builder.create();
+        alert1.show();
+    }
+    void setThemeFromInt(int i) {
+        if (i == 0)
+            colours.setBackgroundColor(getResources().getColor(R.color.white));
+        if (i == 1)
+            colours.setBackgroundColor(getResources().getColor(R.color.black));
+        if (i == 2)
+            colours.setBackgroundColor(getResources().getColor(R.color.red));
+        if (i == 3)
+            colours.setBackgroundColor(getResources().getColor(R.color.indigo));
+        if (i == 4)
+            colours.setBackgroundColor(getResources().getColor(R.color.pink));
+        if (i == 5)
+            colours.setBackgroundColor(getResources().getColor(R.color.teal));
+        if (i == 6)
+            colours.setBackgroundColor(getResources().getColor(R.color.yellow));
+        if (i == 7)
+            colours.setBackgroundColor(getResources().getColor(R.color.orange));
+        if (i == 8) {
+            colours.setBackgroundResource(R.drawable.man);
+            x = getResources().getColor(R.color.red);
+            TextColor(x);
+        }
+        if (i == 9) {
+            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            startActivityForResult(intent, SELECT_PICTURE);
+        }
+    }
+    public void onClick(View v) {
+    }
+    @Override
+    public void onSensorChanged(SensorEvent sensorEvent) {
+        if(running && first){
+            oldSteps = sensorEvent.values[0];
+            first = false;
+        }else if(running){
+            distance.setText(new DecimalFormat("###.###").format(((sensorEvent.values[0]-oldSteps)*0.8)/1000));
+            String ed_text = setdistance.getText().toString().trim();
+            if(ed_text.isEmpty() || ed_text.length() == 0 || ed_text.equals("") || ed_text == null)
+            {
+                compairdist=0.0;
+            }
+            else{
+               compairdist=Double.parseDouble(setdistance.getText().toString());
+            }
+            if ((((sensorEvent.values[0]-oldSteps)*0.8)/1000)>=compairdist && checkdis==0 && compairdist>0)
+            {mediaPlayer =MediaPlayer.create(getApplicationContext(),R.raw.distanceinkm);
+                mediaPlayer.start();
+            checkdis=1;}
+        }
+    }
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int i) {
+    }
+}
