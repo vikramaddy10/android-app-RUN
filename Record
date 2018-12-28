@@ -1,0 +1,11 @@
+package com.example.aditya.addy;
+
+public class Record {
+    String dbdistance,dbtimetaken,dbdate,dbtime;
+    public Record(String distance,String timetaken,String date,String time){
+        this.dbdistance=distance;
+        this.dbtimetaken=timetaken;
+        this.dbdate=date;
+        this.dbtime=time;
+    }
+}
