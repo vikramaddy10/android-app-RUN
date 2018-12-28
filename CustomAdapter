@@ -1,0 +1,50 @@
+package com.example.aditya.addy;
+
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.TextView;
+
+import java.util.List;
+
+public class Customadapter extends BaseAdapter {
+    List<Record> recordList;
+    Context ctx;
+    LayoutInflater layoutInflater;
+    public Customadapter(Context ctx, List<Record> recordList)
+    {
+        this.ctx=ctx;
+        this.recordList = recordList;
+        layoutInflater=LayoutInflater.from(ctx);
+    }
+    @Override
+    public int getCount() {
+        return recordList.size();
+    }
+
+    @Override
+    public Object getItem(int position) {
+        return null;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return 0;
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        View view=layoutInflater.inflate(R.layout.listview,null);
+        TextView tvadistance=(TextView)view.findViewById(R.id.lv_Adistance);
+        TextView tvatimetaken=(TextView)view.findViewById(R.id.lv_Atimetaken);
+        TextView tvadate=(TextView)view.findViewById(R.id.lv_Adate);
+        TextView tvatime=(TextView)view.findViewById(R.id.lv_Atime);
+        tvadistance.setText(""+recordList.get(position).dbdistance);
+        tvatime.setText(""+recordList.get(position).dbtime);
+        tvatimetaken.setText(""+recordList.get(position).dbtimetaken);
+        tvadate.setText(""+recordList.get(position).dbdate);
+        return view;
+    }
+}
