@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black"
+    tools:context="com.example.aditya.addy.MainActivity">
+
+    <TextView
+        android:text="000.000"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textSize="80sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/distancevalue"
+        android:layout_below="@+id/distancetext"
+        android:layout_centerHorizontal="true"
+        fab:layout_constraintTop_toBottomOf="@+id/distancetext"
+        fab:layout_constraintRight_toRightOf="@+id/distancetext"
+        fab:layout_constraintLeft_toLeftOf="@+id/distancetext"/>
+
+    <TextView
+        android:text="KM's"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:id="@+id/distancekmph"
+        android:layout_below="@+id/distancevalue"
+        android:layout_centerHorizontal="true"
+        fab:layout_constraintTop_toBottomOf="@+id/distancevalue"
+        fab:layout_constraintRight_toRightOf="@+id/distancevalue"
+        fab:layout_constraintLeft_toLeftOf="@+id/distancevalue"/>
+
+
+    <TextView
+        android:text="STOP"
+        android:textStyle="bold"
+        android:textSize="30sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/stop"
+        fab:layout_constraintTop_toTopOf="parent"
+        fab:layout_constraintRight_toRightOf="parent"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:text="DISTANCE"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textSize="30sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="26dp"
+        android:id="@+id/distancetext"
+        fab:layout_constraintRight_toRightOf="parent"
+        fab:layout_constraintLeft_toLeftOf="parent"
+        android:layout_below="@+id/start"
+        android:layout_centerHorizontal="true" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:inputType="textNoSuggestions"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:layout_below="@+id/distancekmph"
+        android:layout_marginTop="25dp"
+        android:layout_height="42dp"
+        android:hint="SET DISTANCE"
+        android:ems="10"
+        android:id="@+id/setdistance"
+        fab:layout_constraintHorizontal_bias="0.0"
+        android:layout_centerVertical="true"
+        android:layout_centerHorizontal="true" />
+
+    <TextView
+        android:text="START"
+        android:textStyle="bold"
+        android:textSize="30sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/start"
+        fab:layout_constraintBottom_toBottomOf="parent"
+        fab:layout_constraintRight_toRightOf="parent"
+        fab:layout_constraintLeft_toLeftOf="parent"
+        fab:layout_constraintTop_toTopOf="@+id/distancekmph"
+        fab:layout_constraintVertical_bias="1.0"
+        fab:layout_constraintHorizontal_bias="1.0"
+        android:layout_marginTop="19dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <Chronometer
+        android:id="@+id/simpleChronometer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="10dp"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:layout_below="@+id/timetext"
+        android:layout_alignRight="@+id/timeminutes"
+        android:layout_alignEnd="@+id/timeminutes" />
+
+    <TextView
+        android:text="MINUTES"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/timeminutes"
+        fab:layout_constraintTop_toBottomOf="@+id/simpleChronometer"
+        fab:layout_constraintLeft_toLeftOf="@+id/simpleChronometer"
+        fab:layout_constraintRight_toRightOf="@+id/simpleChronometer"
+        android:layout_below="@+id/simpleChronometer"
+        android:layout_alignLeft="@+id/stop"
+        android:layout_alignStart="@+id/stop" />
+
+    <TextView
+        android:text="TIME"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textSize="25sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/timetext"
+        fab:layout_constraintTop_toTopOf="parent"
+        fab:layout_constraintLeft_toRightOf="@+id/distancekmph"
+        android:layout_below="@+id/setdistance"
+        android:layout_centerHorizontal="true" />
+
+</RelativeLayout>
