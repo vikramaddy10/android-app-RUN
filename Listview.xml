@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:background="#C62828"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:padding="2dp"
+        android:translationZ="6dp"
+        app:cardCornerRadius="6dp"
+        android:id="@+id/cardview">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:background="#B71C1C"
+            android:layout_height="match_parent">
+
+
+            <TextView
+                android:text="     DISTANCE"
+                android:textColor="@android:color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/lv_distance"
+                android:layout_weight="1" />
+
+            <TextView
+                android:text="     TIME TAKEN"
+                android:textColor="@android:color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_below="@id/lv_distance"
+                android:id="@+id/lv_timetaken" />
+
+            <TextView
+                android:text="     DATE"
+                android:textColor="@android:color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/lv_timetaken"
+                android:layout_marginTop="10dp"
+                android:id="@+id/lv_date" />
+
+            <TextView
+                android:text="     TIME"
+                android:textColor="@android:color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_below="@id/lv_date"
+                android:id="@+id/lv_time" />
+            <TextView
+                android:text="ans 1"
+                android:textColor="@android:color/white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="130dp"
+                android:layout_toRightOf="@id/lv_distance"
+                android:id="@+id/lv_Adistance" />
+            <TextView
+                android:text="ans 2"
+                android:textColor="@android:color/white"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="114dp"
+                android:layout_below="@id/lv_Adistance"
+                android:layout_toRightOf="@id/lv_timetaken"
+                android:id="@+id/lv_Atimetaken" />
+            <TextView
+                android:text="ans 3"
+                android:textColor="@android:color/white"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="165dp"
+                android:layout_below="@id/lv_Atimetaken"
+                android:layout_toRightOf="@id/lv_date"
+                android:id="@+id/lv_Adate" />
+            <TextView
+                android:text="ans 4"
+                android:textColor="@android:color/white"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="167dp"
+                android:layout_below="@id/lv_Adate"
+                android:layout_toRightOf="@id/lv_time"
+                android:id="@+id/lv_Atime" />
+
+
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+</RelativeLayout>
